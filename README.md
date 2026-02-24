@@ -2,7 +2,7 @@
 
 > Interface moderne pour visualiser les performances système de Windows
 
-![Preview](main/capture1.jpg)
+![Preview](capture1.jpg)
 
 ---
 
