@@ -24,3 +24,8 @@ Exécutable
 1. Va dans [**Releases**](../../releases)
 2. Télécharge `CheckMyPower.exe`
 3. Lance-le en **administrateur**
+
+---
+
+⚠️ Antivirus
+Faux positif possible (PS2EXE). Code source 100% vérifiable.
