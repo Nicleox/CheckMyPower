@@ -29,13 +29,13 @@ Exécutable
 
 ---
 
-| Score | Verdict | Couleur |
-|-------|---------|---------|
-| 9-10 | Excellent | 🟢 Vert |
-| 7-8.9 | Très bien | 🔵 Cyan |
-| 5-6.9 | Bon | 🟡 Or |
-| 3-4.9 | Moyen | 🟠 Orange |
-| 0-2.9 | Faible | 🔴 Rouge |
+| Score | Verdict |
+|-------|---------|
+| 9-10 | Excellent |
+| 7-8.9 | Très bien |
+| 5-6.9 | Bon |
+| 3-4.9 | Moyen |
+| 0-2.9 | Faible |
 
 ---
 
@@ -54,3 +54,12 @@ Score = (CPU × 25%) + (RAM × 20%) + (GPU × 15%) + (Gaming × 15%) + (Stockage
 
 ⚠️ Antivirus
 Faux positif possible (PS2EXE). Code source 100% vérifiable.
+
+📝 Changelog
+Voir CHANGELOG.md
+
+---
+
+👤 Auteur
+Nicleox — nicleox@cityx.link
+[**☕ Buy me a coffee**](https://www.paypal.com/paypalme/PX01)
