@@ -29,5 +29,28 @@ Exécutable
 
 ---
 
+| Score | Verdict | Couleur |
+|-------|---------|---------|
+| 9-10 | Excellent | 🟢 Vert |
+| 7-8.9 | Très bien | 🔵 Cyan |
+| 5-6.9 | Bon | 🟡 Or |
+| 3-4.9 | Moyen | 🟠 Orange |
+| 0-2.9 | Faible | 🔴 Rouge |
+
+---
+
+📐 Calcul du score global
+Score = (CPU × 25%) + (RAM × 20%) + (GPU × 15%) + (Gaming × 15%) + (Stockage × 25%)
+
+---
+
+📋 Export
+
+📋 Copier → Copie le rapport complet dans le presse-papier
+💾 Exporter → Sauvegarde un fichier .txt sur le Bureau
+🔄 Rafraîchir → Relance l'analyse complète
+
+---
+
 ⚠️ Antivirus
 Faux positif possible (PS2EXE). Code source 100% vérifiable.
