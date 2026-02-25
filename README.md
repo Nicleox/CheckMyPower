@@ -58,7 +58,7 @@ Faux positif possible (PS2EXE). Code source 100% vérifiable.
 ---
 
 📝 Changelog
-Voir[**CHANGELOG**](/CHANGELOG.md)
+Voir [**CHANGELOG**](/CHANGELOG.md)
 
 ---
 
