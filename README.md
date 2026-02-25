@@ -55,8 +55,10 @@ Score = (CPU × 25%) + (RAM × 20%) + (GPU × 15%) + (Gaming × 15%) + (Stockage
 ⚠️ Antivirus
 Faux positif possible (PS2EXE). Code source 100% vérifiable.
 
+---
+
 📝 Changelog
-Voir CHANGELOG.md
+Voir[**CHANGELOG**](/CHANGELOG.md)
 
 ---
 
