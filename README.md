@@ -64,4 +64,4 @@ Voir [**CHANGELOG**](/Changelog.md)
 
 👤 Auteur
 Nicleox — nicleox@cityx.link
-[**☕ Buy me a coffee**](https://www.paypal.com/paypalme/PX01)
+[**☕ Buy me a coffee**](https://buymeacoffee.com/nicleox)
