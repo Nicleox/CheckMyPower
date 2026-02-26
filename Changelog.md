@@ -1,6 +1,20 @@
 # 📋 Changelog
 
-## v1.1 — 2026.02.25
+## v1.1 — 2026.02.26
+
+### ✨ Nouveautés
+- Ajout des informations **pilote GPU** dans le panneau Système (nom GPU, version, date du driver)
+- Ajout de l'état du **disque système** (espace libre / capacité / pourcentage + alerte si espace faible)
+- Ajout des informations **énergie** (profil d'alimentation actif + état secteur/batterie)
+
+### 🔧 Améliorations
+- Recalibrage des scores **GPU gaming** pour mieux refléter la hiérarchie 2026 (haut de gamme récent)
+- Ajustement doux des scores **CPU mobiles** (facteur 0.95, plafond 9.4) pour limiter la pénalisation
+- Renforcement de la détection VRAM via `dxdiag` (chemin explicite System32, fichier temporaire unique, nettoyage garanti)
+
+### 🐛 Corrections
+- Nettoyage de plusieurs artefacts de formatage dans les tables de scores
+- Correction de bloc(s) de script instable(s) afin de garantir un parsing PowerShell propre (`Parse OK`)
 
 ### ✨ Nouveautés
 - Ajout de la section **GPU Gaming** avec score dédié et conseil de performance
