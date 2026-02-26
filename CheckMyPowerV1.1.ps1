@@ -1,5 +1,4 @@
-﻿# ============================================================
-#  CheckMyPower v1.1 — Style Neo-Neon
+﻿#  CheckMyPower v1.1 — Style Neo-Neon
 #  Cree par Nicleox — nicleox@cityx.link — 2026
 #  Licence : Usage personnel
 # ============================================================
@@ -7,6 +6,8 @@
 #Requires -Version 5.1
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "SilentlyContinue"
+# Les erreurs non bloquantes sont absorbees puis degradees par fallback:
+# l'objectif est de sortir un rapport exploitable, meme sur des pilotes limites.
 
 Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
 
@@ -547,10 +548,10 @@ $script:gpuGamingScores = @{
     # ═══════════════════════════════════════════════════════════
     #  NVIDIA DESKTOP — RTX 40 Series (Ada Lovelace - 2022/2024)
     # ═══════════════════════════════════════════════════════════
-    "RTX 4090"=10.0; "RTX 4090D"=9.8
-    "RTX 4080 Super"=9.5; "RTX 4080"=9.3
-    "RTX 4070 Ti Super"=9.0; "RTX 4070 Ti"=8.8; "RTX 4070 Super"=8.8; "RTX 4070"=8.3
-    "RTX 4060 Ti 16GB"=8.0; "RTX 4060 Ti"=7.8; "RTX 4060"=7.3
+    "RTX 4090"=8.8; "RTX 4090D"=8.6
+    "RTX 4080 Super"=8.4; "RTX 4080"=8.2
+    "RTX 4070 Ti Super"=7.9; "RTX 4070 Ti"=7.7; "RTX 4070 Super"=7.6; "RTX 4070"=7.2
+    "RTX 4060 Ti 16GB"=6.9; "RTX 4060 Ti"=6.8; "RTX 4060"=6.3
 
     # ═══════════════════════════════════════════════════════════
     #  NVIDIA DESKTOP — RTX 30 Series (Ampere - 2020/2022)
@@ -656,9 +657,9 @@ $script:gpuGamingScores = @{
     # ═══════════════════════════════════════════════════════════
     #  AMD DESKTOP — RX 7000 Series (RDNA 3 - 2023/2024)
     # ═══════════════════════════════════════════════════════════
-    "RX 7900 XTX"=9.5; "RX 7900 XT"=9.0; "RX 7900 GRE"=8.5
-    "RX 7800 XT"=8.0; "RX 7700 XT"=7.5
-    "RX 7600 XT"=6.8; "RX 7600"=6.5
+    "RX 7900 XTX"=8.1; "RX 7900 XT"=7.8; "RX 7900 GRE"=7.4
+    "RX 7800 XT"=7.1; "RX 7700 XT"=6.7
+    "RX 7600 XT"=6.0; "RX 7600"=5.8
     "RX 7500 XT"=5.8
 
     # ═══════════════════════════════════════════════════════════
@@ -735,8 +736,19 @@ $script:gpuGamingScores = @{
     "Iris Plus G7"=1.8; "Iris Plus G4"=1.5; "Iris Plus 655"=1.5; "Iris Plus 645"=1.3; "Iris Plus"=1.3
     "UHD Graphics 770"=1.5; "UHD Graphics 730"=1.3; "UHD Graphics 710"=1.0
     "UHD Graphics 750"=1.3; "UHD Graphics 630"=1.0; "UHD Graphics 620"=0.8; "UHD Graphics 610"=0.7; "UHD Graphics 600"=0.5
+    
     "UHD"=0.8; "Intel HD Graphics 630"=0.8; "Intel HD Graphics 620"=0.7; "Intel HD Graphics 530"=0.7; "Intel HD Graphics 520"=0.6
     }
+
+$script:gpuGamingDesktopScores = @{}
+$script:gpuGamingLaptopScores = @{}
+foreach ($key in $script:gpuGamingScores.Keys) {
+    if ($key -match "Laptop|Mobile|Max-Q|Notebook|\bMX\d") {
+        $script:gpuGamingLaptopScores[$key] = $script:gpuGamingScores[$key]
+    } else {
+        $script:gpuGamingDesktopScores[$key] = $script:gpuGamingScores[$key]
+    }
+}
 
 # ============================================================
 #  FONCTIONS UTILITAIRES
@@ -761,7 +773,7 @@ function Get-ScoreColor([double]$score) {
 function Get-VRAM {
     $vramMB = 0
 
-    # ── Priorite 1 : nvidia-smi (le plus fiable pour NVIDIA) ──
+    # Priorite 1: nvidia-smi (source la plus fiable pour GPU NVIDIA).
     try {
         $nvsmiPath = "$env:SystemRoot\System32\nvidia-smi.exe"
         if (Test-Path $nvsmiPath) {
@@ -777,7 +789,7 @@ function Get-VRAM {
         }
     } catch {}
 
-    # ── Priorite 2 : Registre qwMemorySize (64 bits) ──
+    # Priorite 2: registre video (valeur 64 bits quand exposee par le pilote).
     try {
         $regPath = "HKLM:\SYSTEM\ControlSet001\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}"
         Get-ChildItem $regPath -ErrorAction SilentlyContinue | ForEach-Object {
@@ -790,31 +802,39 @@ function Get-VRAM {
         if ($vramMB -gt 0) { return $vramMB }
     } catch {}
 
-    # ── Priorite 3 : DxDiag XML (universel NVIDIA / AMD / Intel) ──
+    # Priorite 3: dxdiag XML (fallback universel NVIDIA/AMD/Intel).
+    # Note securite: on appelle explicitement %SystemRoot%\System32\dxdiag.exe
+    # et on utilise un fichier temporaire unique pour eviter les collisions.
     try {
-        $tmpDx = Join-Path $env:TEMP "cmp_dxdiag_vram.xml"
-        if (Test-Path $tmpDx) { Remove-Item $tmpDx -Force }
-        $proc = Start-Process "dxdiag" "/x `"$tmpDx`"" -PassThru -NoNewWindow -WindowStyle Hidden
-        $waited = 0
-        while (-not (Test-Path $tmpDx) -and $waited -lt 20) {
-            Start-Sleep -Seconds 1
-            $waited++
-        }
-        if (Test-Path $tmpDx) {
-            [xml]$dx = Get-Content $tmpDx -Encoding UTF8
-            foreach ($dev in $dx.DxDiag.DisplayDevices.DisplayDevice) {
-                $raw = $dev.DedicatedMemory
-                if ($raw -match '(\d+)') {
-                    $mb = [int]$Matches[1]
-                    if ($mb -gt $vramMB) { $vramMB = $mb }
+        $tmpDx = Join-Path $env:TEMP ("cmp_dxdiag_vram_{0}.xml" -f ([guid]::NewGuid().ToString("N")))
+        $dxdiagPath = Join-Path $env:SystemRoot "System32\dxdiag.exe"
+        if (-not (Test-Path $dxdiagPath)) { throw "dxdiag introuvable" }
+
+        $proc = $null
+        try {
+            $proc = Start-Process -FilePath $dxdiagPath -ArgumentList "/x `"$tmpDx`"" -PassThru -NoNewWindow -WindowStyle Hidden
+            $waited = 0
+            while (-not (Test-Path $tmpDx) -and $waited -lt 20) {
+                Start-Sleep -Seconds 1
+                $waited++
+            }
+            if (Test-Path $tmpDx) {
+                [xml]$dx = Get-Content $tmpDx -Encoding UTF8
+                foreach ($dev in $dx.DxDiag.DisplayDevices.DisplayDevice) {
+                    $raw = $dev.DedicatedMemory
+                    if ($raw -match '(\d+)') {
+                        $mb = [int]$Matches[1]
+                        if ($mb -gt $vramMB) { $vramMB = $mb }
+                    }
                 }
             }
-            Remove-Item $tmpDx -Force -ErrorAction SilentlyContinue
+        } finally {
+            if ($proc -and -not $proc.HasExited) { $proc.Kill() }
+            if (Test-Path $tmpDx) { Remove-Item $tmpDx -Force -ErrorAction SilentlyContinue }
         }
-        if (-not $proc.HasExited) { $proc.Kill() }
     } catch {}
 
-    # ── Priorite 4 : WMI AdapterRAM (fallback 32 bits, max 4 Go) ──
+    # Priorite 4: WMI AdapterRAM (fallback ancien, parfois limite a ~4 Go).
     if ($vramMB -le 0) {
         try {
             $gpu = Get-CimInstance Win32_VideoController -ErrorAction SilentlyContinue |
@@ -893,31 +913,62 @@ function Get-CPUBoost([string]$cpuName) {
     return $null
 }
 
+
+function Test-IsMobileCPUName([string]$cpuName) {
+    if (-not $cpuName) { return $false }
+    if ($cpuName -match "Snapdragon X") { return $true }
+    if ($cpuName -match "Ryzen AI") { return $true }
+    if ($cpuName -match "\b(HX|HS|HK|H|U|P|G7|G4)\b") { return $true }
+    if ($cpuName -match "Laptop|Mobile|Notebook") { return $true }
+    if ($cpuName -match "i[3579]-\d{4,5}[A-Za-z]*U\b|i[3579]-\d{4,5}[A-Za-z]*H\b|i[3579]-\d{4,5}[A-Za-z]*P\b") { return $true }
+    if ($cpuName -match "Ryzen\s*\d\s+\d{4}.*(U|H|HS|HX)\b") { return $true }
+    return $false
+}
+
+function Test-IsLaptopGPUName([string]$gpuName) {
+    if (-not $gpuName) { return $false }
+    return ($gpuName -match "Laptop|Mobile|Max-Q|Notebook|\bMX\d")
+}
+
 function Get-CPUScore($cpuName) {
     # ── Matching exact Intel (ex: i9-13980HX) ──
     $cpuShort = ""
     if ($cpuName -match "(i[3579]-\d{4,5}[A-Za-z]{0,4}\d?)") {
         $cpuShort = $Matches[1]
     }
+
+    [double]$score = $null
     if ($cpuShort -ne "" -and $script:cpuScoreTable.ContainsKey($cpuShort)) {
-        return $script:cpuScoreTable[$cpuShort]
+        $score = $script:cpuScoreTable[$cpuShort]
     }
 
     # ── Matching exact AMD Ryzen ──
-    if ($cpuName -match "(Ryzen\s*\d\s+\d{4}[A-Za-z]{0,3})") {
+    if ($null -eq $score -and $cpuName -match "(Ryzen\s*\d\s+\d{4}[A-Za-z]{0,3})") {
         $amdShort = $Matches[1] -replace '\s+',' '
         if ($script:cpuScoreTable.ContainsKey($amdShort)) {
-            return $script:cpuScoreTable[$amdShort]
+            $score = $script:cpuScoreTable[$amdShort]
         }
     }
 
     # ── Fallback : ancien parcours foreach ──
-    foreach ($key in $script:cpuScoreTable.Keys) {
-        if ($cpuName -match [regex]::Escape($key)) {
-            return $script:cpuScoreTable[$key]
+    if ($null -eq $score) {
+        foreach ($key in $script:cpuScoreTable.Keys) {
+            if ($cpuName -match [regex]::Escape($key)) {
+                $score = $script:cpuScoreTable[$key]
+                break
+            }
         }
     }
-    return $null
+
+    if ($null -eq $score) { return $null }
+
+    # Recalibrage doux mobile vs desktop
+    if (Test-IsMobileCPUName $cpuName) {
+        $score = [math]::Round($score * 0.95, 1)
+        if ($score -gt 9.4) { $score = 9.4 }
+    }
+
+    return $score
 }
 
 function Get-GPUGamingScore($gpuName) {
@@ -938,7 +989,6 @@ function Get-GPUGamingScore($gpuName) {
     if ($gpuName -match "Radeon.*[6-9][0-9]0M")   { return 3.0 }
     return 1.0
 }
-
 function Get-RAMType($smbiosType, $speed) {
     switch ($smbiosType) {
         20 { return "DDR"        }
@@ -1023,6 +1073,92 @@ function Get-AntivirusName {
         if ($names) { return $names }
     } catch {}
     return "Non detecte"
+}
+
+function Get-GPUDriverInfo {
+    $info = @{
+        Name    = "Inconnu"
+        Version = "Inconnue"
+        Date    = "Inconnue"
+    }
+
+    try {
+        $gpu = Get-CimInstance Win32_VideoController -ErrorAction SilentlyContinue |
+               Where-Object { $_.Name -and $_.Name -notmatch "Microsoft Basic|Remote" } |
+               Select-Object -First 1
+        if (-not $gpu) {
+            $gpu = Get-CimInstance Win32_VideoController -ErrorAction SilentlyContinue | Select-Object -First 1
+        }
+        if ($gpu) {
+            if ($gpu.Name) { $info.Name = $gpu.Name.Trim() }
+            if ($gpu.DriverVersion) { $info.Version = $gpu.DriverVersion }
+            if ($gpu.DriverDate) {
+                try {
+                    $dt = [Management.ManagementDateTimeConverter]::ToDateTime($gpu.DriverDate)
+                    $info.Date = $dt.ToString("yyyy-MM-dd")
+                } catch {
+                    $info.Date = "$($gpu.DriverDate)"
+                }
+            }
+        }
+    } catch {}
+
+    return $info
+}
+
+function Get-SystemDiskInfo {
+    $result = @{
+        Summary = "Inconnu"
+        Alert   = ""
+    }
+
+    try {
+        $systemDrive = if ($env:SystemDrive) { $env:SystemDrive } else { "C:" }
+        $disk = Get-CimInstance Win32_LogicalDisk -Filter ("DeviceID='{0}'" -f $systemDrive) -ErrorAction SilentlyContinue
+        if ($disk -and $disk.Size -gt 0) {
+            $sizeGB = [math]::Round($disk.Size / 1GB)
+            $freeGB = [math]::Round($disk.FreeSpace / 1GB)
+            $freePct = [math]::Round(($disk.FreeSpace / $disk.Size) * 100)
+            $result.Summary = "{0} libres / {1} Go ({2}%)" -f "$freeGB Go", $sizeGB, $freePct
+
+            if ($freePct -le 10) {
+                $result.Alert = "Espace critique (<=10%)"
+            } elseif ($freePct -le 15) {
+                $result.Alert = "Espace faible (<=15%)"
+            }
+        }
+    } catch {}
+
+    return $result
+}
+
+function Get-PowerInfo {
+    $schemeName = "Inconnu"
+    try {
+        $activeScheme = (powercfg /GETACTIVESCHEME 2>$null | Out-String).Trim()
+        if ($activeScheme -match "\((.+)\)") {
+            $schemeName = $Matches[1].Trim()
+        }
+    } catch {}
+
+    $source = "Etat secteur/batterie inconnu"
+    try {
+        $bat = Get-CimInstance Win32_Battery -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($bat) {
+            $charge = if ($null -ne $bat.EstimatedChargeRemaining) { "$($bat.EstimatedChargeRemaining)%" } else { "N/A" }
+            $status = [int]$bat.BatteryStatus
+            $onAC = ($status -in 2,3,6,7,8,9,11)
+            if ($onAC) {
+                $source = "Secteur (batterie $charge)"
+            } else {
+                $source = "Batterie ($charge)"
+            }
+        } else {
+            $source = "Secteur (pas de batterie detectee)"
+        }
+    } catch {}
+
+    return "$schemeName | $source"
 }
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -1392,6 +1528,9 @@ function Invoke-Refresh {
     $secureBoot = Get-SecureBootStatus
     $tpmStatus  = Get-TPMStatus
     $avName     = Get-AntivirusName
+    $gpuDriver  = Get-GPUDriverInfo
+    $sysDisk    = Get-SystemDiskInfo
+    $powerInfo  = Get-PowerInfo
 
     # Activation Windows
     $activation = "Inconnu"
@@ -1427,6 +1566,10 @@ function Invoke-Refresh {
     $sysText += "  Secure Boot: $secureBoot`n"
     $sysText += "  TPM        : $tpmStatus`n"
     $sysText += "  Antivirus  : $avName`n"
+    $sysText += "  Pilote GPU : $($gpuDriver.Name) | v$($gpuDriver.Version) | $($gpuDriver.Date)`n"
+    $sysText += "  Disque sys : $($sysDisk.Summary)`n"
+    if ($sysDisk.Alert) { $sysText += "  Alerte disque: $($sysDisk.Alert)`n" }
+    $sysText += "  Energie    : $powerInfo`n"
     $sysText += "  Langue     : $lang`n"
     $sysText += "  Uptime     : $uptimeStr`n"
     $sysText += "  Utilisateur: $userName@$pcName"
@@ -1583,21 +1726,7 @@ function Invoke-Refresh {
 
     [double]$gamingScore = Get-GPUGamingScore $gpuName
 
-    $isLaptopGPU = $false
-    if ($gpuName -match "Laptop|Mobile|Max-Q|Notebook") {
-        $isLaptopGPU = $true
-        $alreadyMobile = $false
-        foreach ($key in $script:gpuGamingScores.Keys) {
-            if ($key -match "Mobile|Laptop" -and $gpuName -match [regex]::Escape(($key -replace '\s*(Mobile|Laptop).*',''))) {
-                $alreadyMobile = $true
-                break
-            }
-        }
-        if (-not $alreadyMobile -and $gamingScore -gt 2) {
-            $gamingScore = [math]::Round($gamingScore * 0.85, 1)
-        }
-    }
-
+    $isLaptopGPU = Test-IsLaptopGPUName $gpuName
     $gamingScore = [math]::Round([math]::Min(10, $gamingScore), 1)
 
     $gamingAdvice = if     ($gamingScore -ge 9) { "4K Ultra 60+ FPS — Haut de gamme absolu" }
@@ -1658,10 +1787,14 @@ function Invoke-Refresh {
         $sizeGB = [math]::Round($d.Size / 1GB)
         $bus    = "$($d.BusType)"
         $media  = "$($d.MediaType)"
+        $looksNvmeModel = $model -match 'NVMe|NVME|\bSN\d{3,4}\b|SDBP|SDCPN|PM9A1|MZVL|MZVLB|MZAL|KXG|BG\d|PC SN|P[35]\s*Plus|980\s*PRO|990\s*PRO|970\s*EVO'
 
         # ── Detection intelligente du type de disque ──
         $typeStr  = "HDD"
-        $isRAID   = ($bus -eq "RAID")
+        $isRAIDBus = ($bus -eq "RAID")
+        # Beaucoup de machines (RST/VMD) remontent "RAID" sans volume RAID reel.
+        $isLikelyRealRaid = $isRAIDBus -and ($model -match "RAID|Array|Virtual Disk|Volume|Intel.*RST|VROC|PERC|MegaRAID|Adaptec|LSI|HPE")
+        $isRAID   = $isLikelyRealRaid
         $raidNote = ""
 
         # NVMe explicite
@@ -1669,28 +1802,38 @@ function Invoke-Refresh {
             $typeStr = "SSD NVMe"
         }
         # RAID : detection avancee
-        elseif ($isRAID) {
+        elseif ($isRAIDBus) {
             $raidNote = " (RAID)"
             if ($media -match "SSD" -or $model -match "SSD|NVMe|NVME|Samsung|WD_BLACK.*SN|Sabrent|Corsair.*MP|Firecuda.*5[2-3]0|980 PRO|990 PRO|P[3-5]|T[5-7]00|A[2-4]000|SN[5-8][5-9]0|Hynix|SK hynix|KIOXIA|Solidigm|Kingston.*NV|Crucial.*T[5-7]00|Intel.*P41|Phison") {
-                if ($model -match "NVMe|NVME|SN[5-8][5-9]0|980 PRO|990 PRO|P[3-5]|Firecuda|MP[5-7]00|T[5-7]00|A[2-4]000|Hynix|KIOXIA|Solidigm|P41|Phison") {
+                if ($looksNvmeModel -or $model -match "SN[5-8][5-9]0|980 PRO|990 PRO|P[3-5]|Firecuda|MP[5-7]00|T[5-7]00|A[2-4]000|Hynix|KIOXIA|Solidigm|P41|Phison") {
                     $typeStr = "SSD NVMe"
                 } else {
                     $typeStr = "SSD SATA"
                 }
             }
             elseif ($media -match "Unspecified|Unknown" -or [string]::IsNullOrEmpty($media)) {
+                # En RAID avec media inconnu, on reste prudent pour eviter les faux positifs NVMe.
                 if ($model -match "Barracuda|WD Blue.*TB|Toshiba.*DT|Seagate.*Desktop|Ironwolf|WD Red|HGST|Hitachi") {
                     $typeStr = "HDD"
                 }
-                elseif ($sizeGB -le 8000) {
+                elseif ($looksNvmeModel -or $model -match "SN[5-8][5-9]0|980 PRO|990 PRO|P[3-5]|Firecuda|MP[5-7]00|T[5-7]00|A[2-4]000|Hynix|KIOXIA|Solidigm|P41|Phison") {
                     $typeStr = "SSD NVMe"
                 }
+                elseif ($model -match "SSD|Samsung|Crucial|Kingston|SanDisk|WD_BLACK|Intel") {
+                    $typeStr = "SSD SATA"
+                }
                 else {
-                    $typeStr = "HDD"
+                    $typeStr = "Inconnu"
                 }
             }
             else {
                 $typeStr = "SSD SATA"
+            }
+            if (-not $isLikelyRealRaid) {
+                $raidNote = ""
+                if ($looksNvmeModel) {
+                    $typeStr = "SSD NVMe"
+                }
             }
         }
         # SSD SATA classique
@@ -1717,7 +1860,7 @@ function Invoke-Refresh {
             elseif ($sizeGB -ge 450)  { $dScore = 8  }
             elseif ($sizeGB -ge 200)  { $dScore = 6  }
             else                      { $dScore = 5  }
-            if ($isRAID -and $dScore -lt 10) { $dScore = [math]::Min(10, $dScore + 1) }
+            if ($isLikelyRealRaid -and $dScore -lt 10) { $dScore = [math]::Min(10, $dScore + 1) }
         }
         elseif ($typeStr -match "SSD") {
             if     ($sizeGB -ge 2000) { $dScore = 9 }
@@ -1725,7 +1868,13 @@ function Invoke-Refresh {
             elseif ($sizeGB -ge 450)  { $dScore = 6 }
             elseif ($sizeGB -ge 200)  { $dScore = 5 }
             else                      { $dScore = 4 }
-            if ($isRAID -and $dScore -lt 10) { $dScore = [math]::Min(10, $dScore + 1) }
+            if ($isLikelyRealRaid -and $dScore -lt 10) { $dScore = [math]::Min(10, $dScore + 1) }
+        }
+        elseif ($typeStr -eq "Inconnu") {
+            if     ($sizeGB -ge 2000) { $dScore = 6 }
+            elseif ($sizeGB -ge 900)  { $dScore = 5 }
+            elseif ($sizeGB -ge 450)  { $dScore = 4 }
+            else                      { $dScore = 3 }
         }
         else {
             if     ($sizeGB -ge 4000) { $dScore = 5 }
@@ -1769,11 +1918,19 @@ function Invoke-Refresh {
             $smartLines += "$healthIcon $($pd.FriendlyName) ($sizeGB Go)"
             $smartLines += "    Statut sante      : $health"
             $smartLines += "    Statut operation  : $opStatus"
-            $smartLines += "    Type de bus       : $($pd.BusType)"
+            $busPd = "$($pd.BusType)"
+            $modelPd = if ($pd.FriendlyName) { $pd.FriendlyName } else { "" }
+            $looksNvmeModelPd = $modelPd -match 'NVMe|NVME|\bSN\d{3,4}\b|SDBP|SDCPN|PM9A1|MZVL|MZVLB|MZAL|KXG|BG\d|PC SN|P[35]\s*Plus|980\s*PRO|990\s*PRO|970\s*EVO'
+            $isPdRaidBus = ($busPd -eq "RAID")
+            $isPdLikelyRealRaid = $isPdRaidBus -and ($modelPd -match "RAID|Array|Virtual Disk|Volume|Intel.*RST|VROC|PERC|MegaRAID|Adaptec|LSI|HPE")
+            $busDisplay = if ($isPdRaidBus -and -not $isPdLikelyRealRaid) {
+                if ($looksNvmeModelPd) { "NVMe (via RST/VMD)" } else { "RAID (pilote/RST, pas de volume RAID detecte)" }
+            } else { $busPd }
+            $smartLines += "    Type de bus       : $busDisplay"
 
             # ── Type de media intelligent (RAID aware) ──
             $smartMedia = "$($pd.MediaType)"
-            if ($pd.BusType -eq "RAID") {
+            if ($isPdRaidBus) {
                 if ($smartMedia -match "SSD" -or $pd.FriendlyName -match "NVMe|NVME|SSD|Samsung|WD_BLACK|Sabrent|Corsair|980|990|SN[5-8]|Hynix|KIOXIA|Solidigm|Kingston|Crucial|Intel.*P41|Phison") {
                     $smartMedia = "SSD (RAID)"
                 }
@@ -1782,6 +1939,10 @@ function Invoke-Refresh {
                 }
                 else {
                     $smartMedia = "$smartMedia (RAID)"
+                }
+                if (-not $isPdLikelyRealRaid) {
+                    $smartMedia = $smartMedia -replace '\s*\(RAID\)$',''
+                    $smartMedia = $smartMedia -replace '\s*probable\s*\(RAID\)$',' probable'
                 }
             }
             $smartLines += "    Type de media     : $smartMedia"
@@ -1988,3 +2149,5 @@ $window.Add_ContentRendered({
 })
 
 $window.ShowDialog() | Out-Null
+
+
