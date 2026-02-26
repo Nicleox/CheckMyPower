@@ -99,7 +99,7 @@ $script:cpuBoostTable = @{
     "i7-9850H"=4.6; "i7-9750H"=4.5; "i7-9750HF"=4.5
     "i5-9400H"=4.3; "i5-9300H"=4.1; "i5-9300HF"=4.1
 
-    # Intel 8e gen mobile H
+    # Intel 8e gen mobile H 
     "i9-8950HK"=4.8
     "i7-8850H"=4.3; "i7-8750H"=4.1; "i7-8700B"=4.6
     "i5-8400H"=4.2; "i5-8300H"=4.0
