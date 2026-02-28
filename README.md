@@ -59,7 +59,6 @@
 
 - Analyse locale (pas de dependance cloud en fonctionnement normal).
 - Des faux positifs antivirus peuvent arriver selon le packaging EXE.
-- Signature numerique recommandee pour la distribution.
 
 ---
 
@@ -114,7 +113,6 @@
 
 - Local hardware analysis tool (no cloud dependency in normal flow).
 - Some antivirus engines may flag packed EXE builds (false positives).
-- Signed binary distribution is recommended.
 
 ---
 
