@@ -1,5 +1,25 @@
 # 📋 Changelog
 
+## v1.2 — 2026.02.28
+
+### ✨ Nouveautés
+- Passage en **bilingue FR/EN** avec choix de langue au démarrage
+- Nouvelle fenêtre de sélection de langue au style **Neo-Neon**
+- Ajout des **profils d'usage** multi-niveaux (Gaming, CAO, Web/Bureautique) avec profil principal et secondaire
+- Ajout du bloc **Alertes** (CRITIQUE / ATTENTION / INFO)
+- Prise en compte du **type de pilote GPU** pour orienter le profil principal (Gaming vs CAO)
+
+### 🔧 Améliorations
+- Harmonisation des libellés UI et rapport texte selon la langue choisie
+- Détection pilote enrichie avec code interne stable (`Gaming`, `CAD`, `Unknown`) pour éviter les erreurs liées à la traduction
+- Rendu des icônes catégories stabilisé (icône + texte direct)
+
+### 🐛 Corrections
+- Correction du bug d'affichage des placeholders (`__SUBTITLE__`, `__RAM__`, etc.)
+- Correction du picker langue qui pouvait ne rien lancer après sélection
+- Correction de la ligne **Windows Update** vide dans certaines exécutions
+- Sécurisation des fallbacks texte pour éviter les champs vides
+
 ## v1.1 — 2026.02.26
 
 ### ✨ Nouveautés
