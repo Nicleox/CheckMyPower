@@ -3,7 +3,8 @@
 > Analyse hardware complete avec scoring sur 10, interface Neo-Neon et profils d'usage intelligents.
 
 [Image 1](./Capture1.jpg)  
-[Image 2](./Capture2.jpg)
+[Image 2](./Capture2.jpg)  
+[Image 3](./Capture3.jpg)
 
 ---
 
