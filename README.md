@@ -1,9 +1,9 @@
-# ⚡ CheckMyPower
+# ⚡ CheckMyPower v1.2
 
-> Analyse hardware complète de votre PC avec scoring sur 10 — Interface Neo-Neon
+> Analyse hardware complete de votre PC avec scoring sur 10, interface Neo-Neon.
 
-[**Image 1**](/Capture1.jpg)
-[**Image 2**](/Capture2.jpg)
+[Image 1](./Capture1.jpg)  
+[Image 2](./Capture2.jpg)
 
 ---
 
@@ -11,57 +11,69 @@
 
 | Module | Détails |
 |--------|---------|
-| 🖥️ **Système** | PC, BIOS, OS, Secure Boot, TPM, Antivirus, Uptime |
-| ⚙️ **CPU** | Modèle, cœurs, threads, fréquence base/boost, score /10 |
-| 🧠 **RAM** | Capacité, type (DDR4/5/LPDDR), fréquence, mode canal, score /10 |
-| 🎨 **GPU Général** | Modèle, VRAM, score /10 |
-| 🎮 **GPU Gaming** | Score gaming dédié, conseil de performance (4K/1440p/1080p) |
-| 💾 **Stockage** | Type (NVMe/SSD/HDD), capacité, score /10 |
-| 🩺 **S.M.A.R.T** | Santé disque, température, heures d'utilisation, erreurs |
-| ⚡ **Score Global** | Moyenne pondérée sur 10 avec verdict |
+| 🖥️ **Systeme** | PC, BIOS, OS, activation, Secure Boot, TPM, antivirus, energie, uptime |
+| ⚙️ **CPU** | Modele, coeurs/threads, frequence base/boost, score /10 |
+| 🧠 **RAM** | Capacite, type (DDR/LPDDR), frequence, mode canal, score /10 |
+| 🎨 **GPU General** | Modele, VRAM, score /10 |
+| 🎮 **GPU Gaming** | Score gaming dedie + conseil de performance |
+| 💾 **Stockage** | Type (NVMe/SSD/HDD), capacite, score /10 |
+| 🛡️ **S.M.A.R.T** | Sante disque, temperature, heures ON, erreurs, usure SSD |
+| ⚡ **Score Global** | Moyenne ponderee sur 10 avec verdict |
+| 🌐 **Bilingue FR/EN** | Choix de langue au demarrage |
+| 🧭 **Profils d'usage** | Profil principal + secondaire (Gaming, CAO, Web/Bureautique) |
+| 🚨 **Alertes** | CRITIQUE / ATTENTION / INFO selon les signaux detectes |
+
+---
 
 ## 🚀 Installation
 
-Exécutable
-1. Va dans [**Releases**](../../releases)
-2. Télécharge `CheckMyPowerv1.1.exe`
-3. Lance-le en **administrateur**
+### Executable
+1. Va dans [Releases](../../releases)
+2. Telecharge la version la plus recente (v1.2+)
+3. Lance l'application en administrateur
 
 ---
+
+## 📊 Barème des verdicts
 
 | Score | Verdict |
 |-------|---------|
-| 9-10 | Excellent |
-| 7-8.9 | Très bien |
-| 5-6.9 | Bon |
-| 3-4.9 | Moyen |
-| 0-2.9 | Faible |
+| 9.0 - 10 | Excellent |
+| 7.0 - 8.9 | Tres bien |
+| 5.0 - 6.9 | Bon |
+| 3.0 - 4.9 | Moyen |
+| 0 - 2.9 | Faible |
 
 ---
 
-📐 Calcul du score global
-Score = (CPU × 25%) + (RAM × 20%) + (GPU × 15%) + (Gaming × 15%) + (Stockage × 25%)
+## 📐 Calcul du score global
+
+`Score = (CPU x 25%) + (RAM x 20%) + (GPU General x 15%) + (GPU Gaming x 15%) + (Stockage x 25%)`
 
 ---
 
-📋 Export
+## 📋 Export
 
-📋 Copier → Copie le rapport complet dans le presse-papier
-💾 Exporter → Sauvegarde un fichier .txt sur le Bureau
-🔄 Rafraîchir → Relance l'analyse complète
-
----
-
-⚠️ Antivirus
-Faux positif possible (PS2EXE). Code source 100% vérifiable.
+- `Copier` -> copie le rapport complet dans le presse-papiers
+- `Exporter` -> sauvegarde un fichier `.txt` sur le Bureau
+- `Rafraichir` -> relance l'analyse complete
 
 ---
 
-📝 Changelog
-Voir [**CHANGELOG**](/Changelog.md)
+## ⚠️ Notes securite
+
+- Faux positif antivirus possible avec certains builds PS2EXE.
+- Le code source est lisible et verifiable dans ce depot.
 
 ---
 
-👤 Auteur
-Nicleox — nicleox@cityx.link
-[**☕ Buy me a coffee**](https://buymeacoffee.com/nicleox)
+## 📝 Changelog
+
+Voir [Changelog.md](./Changelog.md)
+
+---
+
+## 👤 Auteur
+
+Nicleox - nicleox@cityx.link  
+[☕ Buy me a coffee](https://buymeacoffee.com/nicleox)
