@@ -2,6 +2,17 @@
 
 ## FR
 
+### 🆕 v1.2.1 - 2026-03-03
+
+| Type | Changements |
+|------|-------------|
+| ✨ **Ajouts** | Ligne `Mise a jour` affichee sous le titre de l'application (etat de version logiciel) |
+| ✨ **Ajouts** | Affichage des licences actives Windows et Office (nom + fin de cle masquee) |
+| ✨ **Ajouts** | Affichage du nombre d'emplacements RAM libres (si detectables via CIM) |
+| 🔧 **Ameliorations** | Verification de mise a jour GitHub avec cache local (evite les appels repetes) |
+| 🔧 **Ameliorations** | Couverture EPYC et fallback serveur etendus (incluant EPYC 9555) |
+| 🐛 **Corrections** | Activation Windows filtree correctement (evite confusion avec licence Office) |
+
 ### 🆕 v1.2 - 2026-03-01
 
 | Type | Changements |
@@ -49,6 +60,17 @@
 ---
 
 ## EN
+
+### 🆕 v1.2.1 - 2026-03-03
+
+| Type | Changes |
+|------|---------|
+| ✨ **Added** | `Update` line shown under app title (software version status) |
+| ✨ **Added** | Active Windows and Office license display (name + masked key ending) |
+| ✨ **Added** | Free RAM slot count display (when detectable via CIM) |
+| 🔧 **Improved** | GitHub update check with local cache (avoids repeated requests) |
+| 🔧 **Improved** | Extended EPYC/server fallback coverage (including EPYC 9555) |
+| 🐛 **Fixed** | Windows activation now correctly filtered (avoids Office license confusion) |
 
 ### 🆕 v1.2 - 2026-03-01
 

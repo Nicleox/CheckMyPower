@@ -1,4 +1,4 @@
-# ⚡ CheckMyPower v1.2
+# ⚡ CheckMyPower v1.2.1
 
 > Analyse hardware complete avec scoring sur 10, interface Neo-Neon et profils d'usage intelligents.
 
@@ -24,7 +24,10 @@
 | 🧭 **Profils d'usage** | Profil principal + secondaire (Gaming, CAO/CAD, Web/Bureautique) |
 | 🚨 **Alertes** | `CRITIQUE` / `ATTENTION` / `INFO` |
 | 🌐 **Bilingue** | Choix FR/EN au demarrage |
+| 🔄 **Mise a jour app** | Verification auto de la derniere release GitHub (sans installateur) |
 | 🧾 **Office** | Produits detectes + statut `Activation Office` |
+| 🔑 **Licences** | Affichage licences Windows/Office actives (nom + fin de cle masque) |
+| 🧩 **RAM slots** | Affiche le nombre d'emplacements memoire libres si detectable |
 | 📅 **Lifecycle** | Controle support Windows/Office (ex: Windows 10 fin de support 2025-10-14) |
 
 ### 🚀 Installation (EXE uniquement)
@@ -78,7 +81,10 @@
 | 🧭 **Usage profiles** | Primary + secondary profile (Gaming, CAD/CAO, Web/Office) |
 | 🚨 **Alerts** | `CRITICAL` / `WARNING` / `INFO` |
 | 🌐 **Bilingual** | FR/EN language picker at startup |
+| 🔄 **App update** | Auto-check for latest GitHub release (no installer required) |
 | 🧾 **Office** | Detected products + `Office activation` status |
+| 🔑 **Licenses** | Shows active Windows/Office license info (name + masked key ending) |
+| 🧩 **RAM slots** | Displays free memory slots when detectable |
 | 📅 **Lifecycle** | Windows/Office support checks (example: Windows 10 support ended on 2025-10-14) |
 
 ### 🚀 Installation (EXE only)
