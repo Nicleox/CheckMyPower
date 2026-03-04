@@ -1,4 +1,4 @@
-# ⚡ CheckMyPower v1.2.1
+# ⚡ CheckMyPower v1.2.2
 
 > Analyse hardware complete avec scoring sur 10, interface Neo-Neon et profils d'usage intelligents.
 
@@ -18,13 +18,13 @@
 | ⚙️ **CPU** | Modele, coeurs/threads, base/boost, score /10 |
 | 🧠 **RAM** | Capacite, type, frequence, mode canal, score /10 |
 | 🎨 **GPU General** | VRAM + score global GPU |
-| 🎮 **GPU Gaming** | Score gaming dedie + conseil de performance |
-| 💾 **Stockage** | Type (NVMe/SSD/HDD), capacite, score |
+| 🎮 **GPU Gaming** | Score gaming ajuste par VRAM + conseil de performance |
+| 💾 **Stockage** | Type (NVMe/SSD/HDD), capacite, score pondere multi-disques |
 | 🛡️ **SMART** | Sante, temperature, compteurs, usure SSD (si dispo) |
 | 🧭 **Profils d'usage** | Profil principal + secondaire (Gaming, CAO/CAD, Web/Bureautique) |
 | 🚨 **Alertes** | `CRITIQUE` / `ATTENTION` / `INFO` |
 | 🌐 **Bilingue** | Choix FR/EN au demarrage |
-| 🔄 **Mise a jour app** | Verification auto de la derniere release GitHub (sans installateur) |
+| 🔄 **Mise a jour app** | Verification asynchrone (non bloquante) de la derniere release GitHub — bouton `⬇` si mise a jour disponible |
 | 🧾 **Office** | Produits detectes + statut `Activation Office` |
 | 🔑 **Licences** | Affichage licences Windows/Office actives (nom + fin de cle masque) |
 | 🧩 **RAM slots** | Affiche le nombre d'emplacements memoire libres si detectable |
@@ -57,6 +57,7 @@
 | 🔄 `Rafraichir` | Relance l'analyse complete |
 | 📋 `Copier` | Copie le rapport dans le presse-papiers |
 | 💾 `Exporter` | Exporte un fichier `.txt` sur le Bureau |
+| ⬇ `Telecharger` | Ouvre la page de la derniere release (visible uniquement si mise a jour disponible) |
 
 ### ⚠️ Notes securite
 
@@ -75,13 +76,13 @@
 | ⚙️ **CPU** | Model, cores/threads, base/boost, score /10 |
 | 🧠 **RAM** | Capacity, type, speed, channel mode, score /10 |
 | 🎨 **GPU General** | VRAM + general GPU score |
-| 🎮 **GPU Gaming** | Dedicated gaming score + practical guidance |
-| 💾 **Storage** | Type (NVMe/SSD/HDD), capacity, score |
+| 🎮 **GPU Gaming** | VRAM-adjusted gaming score + practical guidance |
+| 💾 **Storage** | Type (NVMe/SSD/HDD), capacity, weighted multi-drive score |
 | 🛡️ **SMART** | Health, temperature, counters, SSD wear (when available) |
 | 🧭 **Usage profiles** | Primary + secondary profile (Gaming, CAD/CAO, Web/Office) |
 | 🚨 **Alerts** | `CRITICAL` / `WARNING` / `INFO` |
 | 🌐 **Bilingual** | FR/EN language picker at startup |
-| 🔄 **App update** | Auto-check for latest GitHub release (no installer required) |
+| 🔄 **App update** | Asynchronous (non-blocking) check for latest GitHub release — `⬇` button appears when an update is available |
 | 🧾 **Office** | Detected products + `Office activation` status |
 | 🔑 **Licenses** | Shows active Windows/Office license info (name + masked key ending) |
 | 🧩 **RAM slots** | Displays free memory slots when detectable |
@@ -114,6 +115,7 @@
 | 🔄 `Refresh` | Reruns full analysis |
 | 📋 `Copy` | Copies report to clipboard |
 | 💾 `Export` | Exports `.txt` report to Desktop |
+| ⬇ `Download` | Opens latest release page (visible only when an update is available) |
 
 ### ⚠️ Security notes
 

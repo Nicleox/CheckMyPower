@@ -2,6 +2,22 @@
 
 ## FR
 
+### 🆕 v1.2.2 - 2026-03-04
+
+| Type | Changements |
+|------|-------------|
+| ✨ **Ajouts** | Bouton `⬇ Telecharger` affiche sous le titre uniquement si une nouvelle version est disponible (lien direct vers la release GitHub) |
+| ✨ **Ajouts** | Panel systeme reorganise en 4 groupes avec separateurs visuels (Materiel, Windows, Logiciels, Environnement) |
+| 🔧 **Ameliorations** | Score GPU gaming ajuste selon la VRAM detectee (paliers de −1.5 a +0.5 points) |
+| 🔧 **Ameliorations** | Score disque pondere : meilleur disque ×70% + moyenne des autres disques ×30% |
+| 🔧 **Ameliorations** | Verification MAJ GitHub asynchrone via Runspace (non bloquante, timeout 15 s) — plus de gel a l'ouverture |
+| 🔧 **Ameliorations** | Scan du registry Uninstall mis en cache (lecture unique partagee entre detection Office et pilote GPU, gain ~500 ms) |
+| 🔧 **Ameliorations** | `Invoke-Refresh` refactorise en 6 fonctions de section independantes + orchestrateur (~50 lignes au lieu de ~750) |
+| 🔧 **Ameliorations** | Nombres magiques (pondérations, facteurs) remplacés par des constantes nommées |
+| 🐛 **Corrections** | Ajustement VRAM ignore si VRAM non detectee (evite une penalite injuste de −1.5 pt) |
+| 🐛 **Corrections** | Gestionnaire de clic du bouton telechargement cable une seule fois (corrige l'accumulation de handlers a chaque rafraichissement) |
+| 🐛 **Corrections** | Chaines codees en dur "Inconnu" rendues bilingues (FR/EN) |
+
 ### 🆕 v1.2.1 - 2026-03-03
 
 | Type | Changements |
@@ -60,6 +76,22 @@
 ---
 
 ## EN
+
+### 🆕 v1.2.2 - 2026-03-04
+
+| Type | Changes |
+|------|---------|
+| ✨ **Added** | `⬇ Download` button shown under the title only when a new version is available (direct GitHub release link) |
+| ✨ **Added** | System panel reorganized into 4 groups with visual separators (Hardware, Windows, Software, Environment) |
+| 🔧 **Improved** | GPU gaming score adjusted by detected VRAM tier (range: −1.5 to +0.5 points) |
+| 🔧 **Improved** | Disk score is now weighted: best drive ×70% + average of remaining drives ×30% |
+| 🔧 **Improved** | GitHub update check runs asynchronously via Runspace (non-blocking, 15 s timeout) — no more startup freeze |
+| 🔧 **Improved** | Uninstall registry scan cached (single shared read across Office and GPU driver detection, ~500 ms gain) |
+| 🔧 **Improved** | `Invoke-Refresh` refactored into 6 independent section functions + orchestrator (~50 lines instead of ~750) |
+| 🔧 **Improved** | Magic numbers (weights, factors) replaced with named constants |
+| 🐛 **Fixed** | VRAM adjustment skipped when VRAM is not detected (avoids an unfair −1.5 pt penalty) |
+| 🐛 **Fixed** | Download button click handler wired once only (fixes handler stacking on each refresh) |
+| 🐛 **Fixed** | Hardcoded "Inconnu" strings made properly bilingual (FR/EN) |
 
 ### 🆕 v1.2.1 - 2026-03-03
 
